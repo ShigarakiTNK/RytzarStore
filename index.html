@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexusDrop - Thon618Store</title>
+    <title>NexusDrop - Tienda de Dropshipping</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -43,83 +43,6 @@
         .fade-in {
             animation: fadeIn 0.8s ease forwards;
         }
-
-        /* Estilos para el carrito */
-        .cart-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .cart-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 450px;
-            height: 100%;
-            background: white;
-            z-index: 1001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .cart-sidebar.active {
-            transform: translateX(0);
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .cart-item {
-            transition: all 0.3s ease;
-        }
-
-        .cart-item.removing {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-
-        @keyframes addToCart {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .add-to-cart-animation {
-            animation: addToCart 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .cart-sidebar {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body class="font-sans bg-gray-50">
@@ -141,19 +64,19 @@
                 <a href="#contact" class="nav-link text-gray-700 hover:text-blue-500 font-medium">Contacto</a>
             </nav>
             
-            <div class="flex items-center space-x-4">
-                <button id="cart-toggle" class="text-gray-700 hover:text-blue-500 relative">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span id="cart-count" class="cart-badge hidden">0</span>
-                </button>
-                <button id="mobile-menu-toggle" class="md:hidden text-gray-700 focus:outline-none">
+            <div class="flex items-center space-x-4 relative">
+                <a href="#" class="text-gray-700 hover:text-blue-500 relative" id="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                </a>
+                <button class="md:hidden text-gray-700 focus:outline-none">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="md:hidden bg-white hidden">
+        <div class="md:hidden bg-white hidden">
             <div class="px-2 pt-2 pb-4 space-y-1">
                 <a href="#home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-50">Inicio</a>
                 <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-50">Productos</a>
@@ -162,54 +85,26 @@
                 <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-50">Contacto</a>
             </div>
         </div>
-    </header>
-
-    <!-- Carrito Lateral -->
-    <div id="cart-overlay" class="cart-overlay">
-        <div id="cart-sidebar" class="cart-sidebar">
-            <div class="h-full flex flex-col">
-                <!-- Header del carrito -->
-                <div class="flex items-center justify-between p-6 border-b">
-                    <h2 class="text-xl font-bold text-gray-800">
-                        <i class="fas fa-shopping-cart mr-2"></i>
-                        Carrito de Compras
-                    </h2>
-                    <button id="cart-close" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+        <!-- Cart Dropdown -->
+        <div id="cart-dropdown" class="hidden absolute right-0 mt-2 w-72 md:w-80 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+            <div class="p-4">
+                <h3 class="font-bold text-gray-800 mb-4">Tu Carrito</h3>
+                <div id="cart-items" class="max-h-64 overflow-y-auto">
+                    <!-- Cart items will be added here dynamically -->
+                    <p id="empty-cart-message" class="text-gray-500 text-center py-4">Tu carrito está vacío</p>
                 </div>
-                
-                <!-- Contenido del carrito -->
-                <div class="flex-1 overflow-y-auto p-6">
-                    <div id="cart-items" class="space-y-4">
-                        <!-- Los productos se agregarán aquí dinámicamente -->
+                <div id="cart-total" class="border-t border-gray-200 pt-3 mt-3 hidden">
+                    <div class="flex justify-between font-bold text-gray-800">
+                        <span>Total:</span>
+                        <span id="total-amount">$0.00</span>
                     </div>
-                    
-                    <div id="cart-empty" class="text-center py-12">
-                        <i class="fas fa-shopping-cart text-gray-300 text-6xl mb-4"></i>
-                        <p class="text-gray-500 text-lg">Tu carrito está vacío</p>
-                        <p class="text-gray-400 text-sm mt-2">Agrega algunos productos para comenzar</p>
-                    </div>
-                </div>
-                
-                <!-- Footer del carrito -->
-                <div id="cart-footer" class="border-t p-6 bg-gray-50 hidden">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-lg font-medium text-gray-800">Total:</span>
-                        <span id="cart-total" class="text-xl font-bold text-blue-600">$0.00</span>
-                    </div>
-                    <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
-                        <i class="fas fa-credit-card mr-2"></i>
-                        Proceder al Pago
-                    </button>
-                    <button id="clear-cart" class="w-full mt-2 bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
-                        <i class="fas fa-trash mr-2"></i>
-                        Vaciar Carrito
-                    </button>
+                    <a href="#" class="block mt-4 bg-blue-500 text-white text-center py-2 rounded-md hover:bg-blue-600 transition duration-300">
+                        Ver Carrito
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- Hero Section -->
     <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
@@ -246,7 +141,7 @@
                 <!-- Product 1 -->
                 <div class="product-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 product electronics">
                     <div class="relative overflow-hidden h-64">
-                        <img src="https://m.media-amazon.com/images/I/61bDUz4EE+L._AC_SY300_SX300_.jpg" alt="Auriculares inalámbricos" class="w-full h-full object-cover">
+                        <img src="https://m.media-amazon.com/images/I/61bDUz4EE+L._AC_SX569_.jpg" alt="Auriculares inalámbricos" class="w-full h-full object-cover">
                         <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">NUEVO</div>
                     </div>
                     <div class="p-4">
@@ -264,10 +159,7 @@
                         <p class="text-gray-600 text-sm mb-3">Auriculares inalámbricos con cancelación de ruido y 30h de batería.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold text-gray-800">$15.99</span>
-                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300" 
-                                    data-name="Auriculares Bluetooth" 
-                                    data-price="15.99" 
-                                    data-image="https://m.media-amazon.com/images/I/61bDUz4EE+L._AC_SY300_SX300_.jpg">
+                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300">
                                 <i class="fas fa-cart-plus mr-1"></i> Agregar
                             </button>
                         </div>
@@ -277,7 +169,7 @@
                 <!-- Product 2 -->
                 <div class="product-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 product home">
                     <div class="relative overflow-hidden h-64">
-                        <img src="https://m.media-amazon.com/images/I/61j9bpF2RuL._AC_SX679_.jpg" alt="Lámpara LED" class="w-full h-full object-cover">
+                        <img src="https://m.media-amazon.com/images/I/61j9bpF2RuL.__AC_SY445_SX342_QL70_ML2_.jpg" alt="Lámpara LED" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-800 mb-1">Lámpara LED Inteligente</h3>
@@ -293,11 +185,8 @@
                         </div>
                         <p class="text-gray-600 text-sm mb-3">Controla la iluminación desde tu smartphone con 16 millones de colores.</p>
                         <div class="flex justify-between items-center">
-                            <span class="text-lg font-bold text-gray-800">$7.99</span>
-                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300"
-                                    data-name="Lámpara LED Inteligente" 
-                                    data-price="7.99" 
-                                    data-image="https://m.media-amazon.com/images/I/61j9bpF2RuL._AC_SX679_.jpg">
+                            <span class="text-lg font-bold text-gray-800">$12.99</span>
+                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300">
                                 <i class="fas fa-cart-plus mr-1"></i> Agregar
                             </button>
                         </div>
@@ -307,7 +196,7 @@
                 <!-- Product 3 -->
                 <div class="product-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 product beauty">
                     <div class="relative overflow-hidden h-64">
-                        <img src="https://m.media-amazon.com/images/I/61zKRO0jJsL._AC_SX679_.jpg" alt="Cepillo facial" class="w-full h-full object-cover">
+                        <img src="https://m.media-amazon.com/images/I/61zKRO0jJsL._AC_SX679_.jpg" alt="Mascara Simon Ghost Cosplay" class="w-full h-full object-cover">
                         <div class="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">OFERTA</div>
                     </div>
                     <div class="p-4">
@@ -325,10 +214,7 @@
                         <p class="text-gray-600 text-sm mb-3">Tela transpirable, ergonimica y sobre todo apta para lavado en lavarropas.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold text-gray-800">$11.99 <span class="text-sm text-red-500 line-through">$20.50</span></span>
-                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300"
-                                    data-name="Mascara Simon Ghost Cosplay" 
-                                    data-price="11.99" 
-                                    data-image="https://m.media-amazon.com/images/I/61zKRO0jJsL._AC_SX679_.jpg">
+                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300">
                                 <i class="fas fa-cart-plus mr-1"></i> Agregar
                             </button>
                         </div>
@@ -338,7 +224,7 @@
                 <!-- Product 4 -->
                 <div class="product-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 product fitness">
                     <div class="relative overflow-hidden h-64">
-                        <img src="https://m.media-amazon.com/images/I/716Huc62qAL._AC_SL1500_.jpg" alt="Banda de resistencia" class="w-full h-full object-cover">
+                        <img src="https://m.media-amazon.com/images/I/716Huc62qAL.__AC_SX300_SY300_QL70_ML2_.jpg" alt="Banda de resistencia" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-800 mb-1">Bandas de Resistencia</h3>
@@ -355,10 +241,7 @@
                         <p class="text-gray-600 text-sm mb-3">Set de 5 bandas con diferentes niveles de resistencia y agarres.</p>
                         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold text-gray-800">$19.99</span>
-                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300"
-                                    data-name="Bandas de Resistencia" 
-                                    data-price="19.99" 
-                                    data-image="https://m.media-amazon.com/images/I/716Huc62qAL._AC_SL1500_.jpg">
+                            <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm transition duration-300">
                                 <i class="fas fa-cart-plus mr-1"></i> Agregar
                             </button>
                         </div>
@@ -497,4 +380,541 @@
                 </div>
                 
                 <!-- FAQ Item 2 -->
-                <div class="mb
+                <div class="mb-4 border-b border-gray-200 pb-4">
+                    <button class="faq-btn flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-blue-500 focus:outline-none">
+                        <span>¿Qué métodos de pago aceptan?</span>
+                        <i class="fas fa-chevron-down text-blue-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600">
+                        <p>Aceptamos diversas formas de pago para tu comodidad: tarjetas de crédito/débito (Visa, MasterCard, American Express), PayPal, transferencias bancarias y en algunos países, pagos contra entrega. Todos los pagos se procesan de forma segura a través de nuestra plataforma cifrada.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="mb-4 border-b border-gray-200 pb-4">
+                    <button class="faq-btn flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-blue-500 focus:outline-none">
+                        <span>¿Ofrecen garantía en los productos?</span>
+                        <i class="fas fa-chevron-down text-blue-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600">
+                        <p>Sí, todos nuestros productos tienen una garantía de 30 días contra defectos de fabricación. Si recibes un artículo defectuoso o no estás satisfecho con tu compra, puedes solicitar un reembolso o reemplazo dentro de este período. Algunos productos tienen garantías extendidas del fabricante que se indican en la descripción del producto.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="mb-4 border-b border-gray-200 pb-4">
+                    <button class="faq-btn flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-blue-500 focus:outline-none">
+                        <span>¿Cómo puedo hacer un seguimiento de mi pedido?</span>
+                        <i class="fas fa-chevron-down text-blue-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600">
+                        <p>Una vez que tu pedido haya sido enviado, recibirás un correo electrónico con un número de seguimiento y un enlace para rastrear tu paquete. También puedes iniciar sesión en tu cuenta en nuestro sitio web para ver el estado actualizado de tu pedido en cualquier momento.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 5 -->
+                <div class="mb-4 border-b border-gray-200 pb-4">
+                    <button class="faq-btn flex justify-between items-center w-full text-left font-medium text-gray-800 hover:text-blue-500 focus:outline-none">
+                        <span>¿Puedo cancelar o modificar mi pedido?</span>
+                        <i class="fas fa-chevron-down text-blue-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600">
+                        <p>Puedes cancelar o modificar tu pedido siempre que no haya sido enviado. Una vez que el pedido está en proceso de envío, no podemos garantizar cambios. Si necesitas hacer modificaciones, contáctanos lo antes posible a través de nuestro servicio de atención al cliente.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section id="contact" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/2 bg-blue-500 text-white p-8">
+                        <h2 class="text-2xl font-bold mb-4">Contáctanos</h2>
+                        <p class="mb-6">¿Tienes alguna pregunta o comentario? Completa el formulario y nuestro equipo te responderá lo antes posible.</p>
+                        
+                        <div class="mb-6">
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-map-marker-alt mr-3"></i>
+                                <span>Av. Principal 1234, Ciudad, País</span>
+                            </div>
+                            <div class="flex items-center mb-3">
+                                <i class="fas fa-phone-alt mr-3"></i>
+                                <span>+1 (234) 567-8900</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope mr-3"></i>
+                                <span>info@nexusdrop.com</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-white hover:text-blue-200">
+                                <i class="fab fa-facebook-f text-xl"></i>
+                            </a>
+                            <a href="#" class="text-white hover:text-blue-200">
+                                <i class="fab fa-twitter text-xl"></i>
+                            </a>
+                            <a href="#" class="text-white hover:text-blue-200">
+                                <i class="fab fa-instagram text-xl"></i>
+                            </a>
+                            <a href="#" class="text-white hover:text-blue-200">
+                                <i class="fab fa-linkedin-in text-xl"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2 p-8">
+                        <form id="contactForm" class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-gray-700 font-medium mb-1">Nombre</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-gray-700 font-medium mb-1">Correo Electrónico</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            
+                            <div>
+                                <label for="subject" class="block text-gray-700 font-medium mb-1">Asunto</label>
+                                <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            
+                            <div>
+                                <label for="message" class="block text-gray-700 font-medium mb-1">Mensaje</label>
+                                <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+                                Enviar Mensaje <i class="fas fa-paper-plane ml-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-12 bg-blue-500 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold mb-4">Suscríbete a nuestro boletín</h2>
+            <p class="max-w-2xl mx-auto mb-6">Recibe ofertas exclusivas, novedades de productos y descuentos especiales directamente en tu correo.</p>
+            
+            <form class="max-w-md mx-auto flex">
+                <input type="email" placeholder="Tu correo electrónico" class="flex-grow px-4 py-3 rounded-l-md focus:outline-none text-gray-800">
+                <button type="submit" class="bg-blue-700 hover:bg-blue-800 px-6 py-3 rounded-r-md font-medium transition duration-300">
+                    Suscribirse
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-bolt text-blue-500 mr-2"></i>
+                        <span>Nexus<span class="text-blue-500">Drop</span></span>
+                    </h3>
+                    <p class="text-gray-400">Conectamos a los clientes con los mejores productos de todo el mundo a través de nuestro sistema de dropshipping.</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Enlaces Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition duration-300">Inicio</a></li>
+                        <li><a href="#products" class="text-gray-400 hover:text-white transition duration-300">Productos</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition duration-300">Sobre Nosotros</a></li>
+                        <li><a href="#faq" class="text-gray-400 hover:text-white transition duration-300">Preguntas Frecuentes</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white transition duration-300">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Categorías</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Electrónica</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Hogar</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Belleza</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Fitness</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Ofertas</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <address class="text-gray-400 not-italic">
+                        <p class="mb-2"><i class="fas fa-map-marker-alt mr-2 text-blue-500"></i> Av. Principal 1234, Ciudad, País</p>
+                        <p class="mb-2"><i class="fas fa-phone-alt mr-2 text-blue-500"></i> +1 (234) 567-8900</p>
+                        <p><i class="fas fa-envelope mr-2 text-blue-500"></i> info@nexusdrop.com</p>
+                    </address>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 NexusDrop. Todos los derechos reservados.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .cart-item {
+            transition: all 0.3s ease;
+        }
+        .cart-item:hover {
+            background-color: #f9fafb;
+        }
+        .remove-item {
+            transition: color 0.2s ease;
+        }
+        .remove-item:hover {
+            color: #ef4444;
+        }
+    </style>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+        const cartIcon = document.getElementById('cart-icon');
+        const cartDropdown = document.getElementById('cart-dropdown');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const cartTotal = document.getElementById('cart-total');
+        const totalAmount = document.getElementById('total-amount');
+        const cartCount = document.getElementById('cart-count');
+
+        // Toggle cart dropdown
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            cartDropdown.classList.toggle('hidden');
+        });
+
+        // Close cart when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!cartIcon.contains(e.target) && !cartDropdown.contains(e.target)) {
+                cartDropdown.classList.add('hidden');
+            }
+        });
+
+        // Add to cart function
+        function addToCart(productName, productPrice) {
+            // Add product to cart array
+            cart.push({
+                name: productName,
+                price: productPrice
+            });
+
+            // Update cart UI
+            updateCartUI();
+
+            // Show success feedback
+            const originalText = event.target.innerHTML;
+            event.target.innerHTML = '<i class="fas fa-check mr-1"></i> Agregado';
+            event.target.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            event.target.classList.add('bg-green-500', 'hover:bg-green-600');
+            
+            setTimeout(() => {
+                event.target.innerHTML = originalText;
+                event.target.classList.remove('bg-green-500', 'hover:bg-green-600');
+                event.target.classList.add('bg-blue-500', 'hover:bg-blue-600');
+            }, 2000);
+        }
+
+        // Remove item from cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // Update cart UI
+        function updateCartUI() {
+            // Clear current items
+            cartItemsContainer.innerHTML = '';
+
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartTotal.classList.add('hidden');
+                cartCount.classList.add('hidden');
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                cartTotal.classList.remove('hidden');
+                
+                // Add each item to the cart UI
+                cart.forEach((item, index) => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item flex justify-between items-center py-3 border-b border-gray-100';
+                    cartItem.innerHTML = `
+                        <div>
+                            <h4 class="font-medium text-gray-800">${item.name}</h4>
+                            <p class="text-gray-600 text-sm">${item.price}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="remove-item text-gray-400 hover:text-red-500">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    cartItemsContainer.appendChild(cartItem);
+                });
+
+                // Calculate and display total
+                const total = cart.reduce((sum, item) => {
+                    return sum + parseFloat(item.price.replace('        document.querySelector('button').addEventListener('click', function() {
+            const mobileMenu = document.querySelector('.md\\:hidden');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // FAQ accordion
+        const faqButtons = document.querySelectorAll('.faq-btn');
+        faqButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                // Toggle content
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Product filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const products = document.querySelectorAll('.product');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-blue-500', 'hover:text-white');
+                });
+                
+                button.classList.add('bg-blue-500', 'text-white');
+                button.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-blue-500', 'hover:text-white');
+                
+                // Filter products
+                const filter = button.getAttribute('data-filter');
+                
+                products.forEach(product => {
+                    if (filter === 'all' || product.classList.contains(filter)) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Add to cart event listeners
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productCard = button.closest('.product-card');
+                const productName = productCard.querySelector('h3').textContent;
+                const productPrice = productCard.querySelector('.text-lg.font-bold').textContent;
+                addToCart(productName, productPrice);
+            });
+        });
+
+        // Form submission
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Here you would typically send the form data to a server
+                alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
+                contactForm.reset();
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        window.addEventListener('load', fadeInOnScroll);
+        window.addEventListener('scroll', fadeInOnScroll);
+    </script>
+</body>
+</html>, ''));
+                }, 0);
+                totalAmount.textContent = `${total.toFixed(2)}`;
+
+                // Update cart count
+                cartCount.textContent = cart.length;
+                cartCount.classList.remove('hidden');
+            }
+        }
+
+        // Mobile menu toggle
+        document.querySelector('button').addEventListener('click', function() {
+            const mobileMenu = document.querySelector('.md\\:hidden');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // FAQ accordion
+        const faqButtons = document.querySelectorAll('.faq-btn');
+        faqButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                // Toggle content
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Product filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const products = document.querySelectorAll('.product');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-blue-500', 'hover:text-white');
+                });
+                
+                button.classList.add('bg-blue-500', 'text-white');
+                button.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-blue-500', 'hover:text-white');
+                
+                // Filter products
+                const filter = button.getAttribute('data-filter');
+                
+                products.forEach(product => {
+                    if (filter === 'all' || product.classList.contains(filter)) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Add to cart animation
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const originalText = button.innerHTML;
+                
+                button.innerHTML = '<i class="fas fa-check mr-1"></i> Agregado';
+                button.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                button.classList.add('bg-green-500', 'hover:bg-green-600');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    button.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }, 2000);
+            });
+        });
+
+        // Form submission
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Here you would typically send the form data to a server
+                alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
+                contactForm.reset();
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const fadeInOnScroll = () => {
+            fadeElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementTop < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        window.addEventListener('load', fadeInOnScroll);
+        window.addEventListener('scroll', fadeInOnScroll);
+    </script>
+</body>
+</html>
